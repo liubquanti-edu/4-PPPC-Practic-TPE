@@ -13,8 +13,11 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final FirebaseService _firebaseService = FirebaseService();
+  final MapController _mapController = MapController();
   List<MarkerModel> markers = [];
   bool isLoading = true;
+  LatLng _center = LatLng(49.58951146789152, 34.55103417186048);
+  double _zoom = 12.0;
 
   @override
   void initState() {
@@ -23,7 +26,6 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _loadMarkers() async {
-    setState(() => isLoading = true);
     final loadedMarkers = await _firebaseService.getMarkers();
     setState(() {
       markers = loadedMarkers;
@@ -33,23 +35,51 @@ class _MapScreenState extends State<MapScreen> {
 
   void _addMarker(MarkerModel marker) async {
     await _firebaseService.addMarker(marker);
-    _loadMarkers();
+    final loadedMarkers = await _firebaseService.getMarkers();
+    setState(() {
+      markers = loadedMarkers;
+    });
+  }
+
+  void _updateMarker(MarkerModel marker) async {
+    await _firebaseService.updateMarker(marker);
+    final loadedMarkers = await _firebaseService.getMarkers();
+    setState(() {
+      markers = loadedMarkers;
+    });
+  }
+
+  void _deleteMarker(String id) async {
+    await _firebaseService.deleteMarker(id);
+    final loadedMarkers = await _firebaseService.getMarkers();
+    setState(() {
+      markers = loadedMarkers;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return ScaffoldPage(
-      header: PageHeader(title: const Text('Map')),
+      header: PageHeader(title: const Text('Мапа')),
       content: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(8.0),
           child: isLoading
           ? const Center(child: ProgressRing())
           : FlutterMap(
+              mapController: _mapController,
               options: MapOptions(
-                center: LatLng(49.590499296041, 34.551383478016156),
-                zoom: 12.0,
+                center: _center,
+                zoom: _zoom,
+                onPositionChanged: (position, hasGesture) {
+                  if (hasGesture) {
+                    setState(() {
+                      _center = position.center!;
+                      _zoom = position.zoom!;
+                    });
+                  }
+                },
                 onLongPress: (tapPosition, point) {
                   _showEditDialog(null, point);
                 },
@@ -65,20 +95,65 @@ class _MapScreenState extends State<MapScreen> {
                       width: 80.0,
                       height: 80.0,
                       point: LatLng(marker.latitude, marker.longitude),
-                      builder: (ctx) => Icon(
-                        FluentIcons.location,
-                        color: marker.unit == 'gas' 
-                          ? const Color(0xFF00b294) // Green for gas stations
-                          : marker.unit == 'hotel' 
-                            ? const Color(0xFF006BB2) // Blue for hotels
-                            : const Color(0xFFB2A600), // Yellow for service
-                        size: 40,
+                      builder: (ctx) => GestureDetector(
+                        onTap: () => _showMarkerDetails(marker),
+                        child: Icon(
+                            marker.unit == 'gas' 
+                            ? FluentIcons.car
+                            : marker.unit == 'hotel'
+                              ? FluentIcons.hotel
+                              : FluentIcons.repair,
+                            color: marker.unit == 'gas' 
+                              ? Colors.green 
+                              : marker.unit == 'hotel' 
+                                ? Colors.blue 
+                                : Colors.yellow,
+                          size: 30,
+                        ),
                       ),
                     );
                   }).toList(),
                 ),
               ],
             ),),),
+    );
+  }
+
+  void _showMarkerDetails(MarkerModel marker) {
+    showDialog(
+      context: context,
+      builder: (context) => ContentDialog(
+        title: Text(marker.title),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Опис: ${marker.description}'),
+            Text('Широта: ${marker.latitude}'),
+            Text('Довгота: ${marker.longitude}'),
+          ],
+        ),
+        actions: [
+          Button(
+            child: const Text('Редагувати'),
+            onPressed: () {
+              Navigator.pop(context);
+              _showEditDialog(marker, null);
+            },
+          ),
+          Button(
+            child: const Text('Видалити'),
+            onPressed: () {
+              _deleteMarker(marker.id);
+              Navigator.pop(context);
+            },
+          ),
+          Button(
+            child: const Text('Закрити'),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
     );
   }
 
@@ -177,10 +252,5 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _updateMarker(MarkerModel marker) async {
-    await _firebaseService.updateMarker(marker);
-    _loadMarkers();
   }
 }

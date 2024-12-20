@@ -64,10 +64,10 @@ class _MarkersScreenState extends State<MarkersScreen> {
           child: ListTile(
             leading: Icon(
               marker.unit == 'gas'
-                  ? FluentIcons.plug_connected
+                  ? FluentIcons.car
                   : marker.unit == 'hotel'
-                      ? FluentIcons.home
-                      : FluentIcons.settings,
+                      ? FluentIcons.hotel
+                      : FluentIcons.repair,
             ),
             title: Text(marker.title),
             subtitle: Text(marker.description),

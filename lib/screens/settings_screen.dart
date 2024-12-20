@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import '../notifiers/theme_notifier.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -9,55 +10,37 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  String _themeMode = 'system';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadThemeMode();
-  }
-
-  Future<void> _loadThemeMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _themeMode = prefs.getString('themeMode') ?? 'system';
-    });
-  }
-
-  Future<void> _saveThemeMode(String mode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('themeMode', mode);
-    setState(() {
-      _themeMode = mode;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ScaffoldPage(
-      header: PageHeader(title: const Text('Settings')),
-      content: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Theme Mode'),
-            RadioButton(
-              checked: _themeMode == 'system',
-              onChanged: (value) => _saveThemeMode('system'),
-              content: const Text('System'),
-            ),
-            RadioButton(
-              checked: _themeMode == 'light',
-              onChanged: (value) => _saveThemeMode('light'),
-              content: const Text('Light'),
-            ),
-            RadioButton(
-              checked: _themeMode == 'dark',
-              onChanged: (value) => _saveThemeMode('dark'),
-              content: const Text('Dark'),
-            ),
-          ],
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, _) => ScaffoldPage(
+        header: PageHeader(title: const Text('Налаштування')),
+        content: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Тема програми'),
+              const SizedBox(height: 10),
+              RadioButton(
+                checked: themeNotifier.themeMode == 'system',
+                onChanged: (_) => themeNotifier.setTheme('system'),
+                content: const Text('Системнв'),
+              ),
+              const SizedBox(height: 10),
+              RadioButton(
+                checked: themeNotifier.themeMode == 'light',
+                onChanged: (_) => themeNotifier.setTheme('light'),
+                content: const Text('Світла'),
+              ),
+              const SizedBox(height: 10),
+              RadioButton(
+                checked: themeNotifier.themeMode == 'dark',
+                onChanged: (_) => themeNotifier.setTheme('dark'),
+                content: const Text('Темна'),
+              ),
+            ],
+          ),
         ),
       ),
     );
