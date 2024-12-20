@@ -48,8 +48,8 @@ class _MapScreenState extends State<MapScreen> {
           ? const Center(child: ProgressRing())
           : FlutterMap(
               options: MapOptions(
-                center: LatLng(50.4501, 30.5234), // Center on Kyiv, Ukraine
-                zoom: 10.0,
+                center: LatLng(49.590499296041, 34.551383478016156),
+                zoom: 12.0,
                 onLongPress: (tapPosition, point) {
                   _showEditDialog(null, point);
                 },
@@ -68,10 +68,10 @@ class _MapScreenState extends State<MapScreen> {
                       builder: (ctx) => Icon(
                         FluentIcons.location,
                         color: marker.unit == 'gas' 
-                          ? const Color.fromARGB(255, 0, 255, 0) // Green for gas stations
+                          ? const Color(0xFF00b294) // Green for gas stations
                           : marker.unit == 'hotel' 
-                            ? const Color.fromARGB(255, 0, 0, 255) // Blue for hotels
-                            : const Color.fromARGB(255, 255, 255, 0), // Yellow for service
+                            ? const Color(0xFF006BB2) // Blue for hotels
+                            : const Color(0xFFB2A600), // Yellow for service
                         size: 40,
                       ),
                     );
