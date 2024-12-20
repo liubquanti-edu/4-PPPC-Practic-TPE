@@ -17,6 +17,13 @@ dependencies:
   flutter_map: ^3.1.0
   latlong2: ^0.8.1
   fluentui_system_icons: ^1.1.270
+  flutter_launcher_icons: ^0.14.2
+
+flutter_launcher_icons:
+  image_path: "assets/logo.png"
+  windows:
+    generate: true
+    icon_size: 256
 
 dev_dependencies:
   flutter_test:
