@@ -1,16 +1,17 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../models/marker_model.dart';
 import '../services/firebase_service.dart';
 
-class MarkersScreen extends StatefulWidget {
-  const MarkersScreen({super.key});
+class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
 
   @override
-  State<MarkersScreen> createState() => _MarkersScreenState();
+  State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MarkersScreenState extends State<MarkersScreen> {
+class _MapScreenState extends State<MapScreen> {
   final FirebaseService _firebaseService = FirebaseService();
   List<MarkerModel> markers = [];
   bool isLoading = true;
@@ -30,68 +31,58 @@ class _MarkersScreenState extends State<MarkersScreen> {
     });
   }
 
+  void _addMarker(MarkerModel marker) async {
+    await _firebaseService.addMarker(marker);
+    _loadMarkers();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScaffoldPage(
-      header: PageHeader(
-        title: const Text('Менеджер маркерів'),
-        commandBar: CommandBar(
-          mainAxisAlignment: MainAxisAlignment.end,
-          primaryItems: [
-            CommandBarButton(
-              icon: const Icon(FluentIcons.add),
-              label: const Text('Додати маркер'),
-              onPressed: () => _showEditDialog(null, null),
-            ),
-          ],
-        ),
-      ),
+      header: PageHeader(title: const Text('Map')),
       content: Padding(
-        padding: const EdgeInsets.all(16),
-        child: isLoading
-            ? const Center(child: ProgressRing())
-            : _buildMarkerList(),
-      ),
-    );
-  }
-
-  Widget _buildMarkerList() {
-    return ListView.builder(
-      itemCount: markers.length,
-      itemBuilder: (context, index) {
-        final marker = markers[index];
-        return Card(
-          child: ListTile(
-            leading: Icon(
-              marker.unit == 'gas'
-                  ? FluentIcons.plug_connected
-                  : marker.unit == 'hotel'
-                      ? FluentIcons.home
-                      : FluentIcons.settings,
-            ),
-            title: Text(marker.title),
-            subtitle: Text(marker.description),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
+        padding: const EdgeInsets.all(16.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12.0),
+          child: isLoading
+          ? const Center(child: ProgressRing())
+          : FlutterMap(
+              options: MapOptions(
+                center: LatLng(50.4501, 30.5234), // Center on Kyiv, Ukraine
+                zoom: 10.0,
+                onLongPress: (tapPosition, point) {
+                  _showEditDialog(null, point);
+                },
+              ),
               children: [
-                Button(
-                  child: const Icon(FluentIcons.edit),
-                  onPressed: () => _showEditDialog(marker, null),
+                TileLayer(
+                  urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  subdomains: const ['a', 'b', 'c'],
                 ),
-                const SizedBox(width: 8),
-                Button(
-                  child: const Icon(FluentIcons.delete),
-                  onPressed: () => _deleteMarker(marker.id),
+                MarkerLayer(
+                  markers: markers.map((marker) {
+                    return Marker(
+                      width: 80.0,
+                      height: 80.0,
+                      point: LatLng(marker.latitude, marker.longitude),
+                      builder: (ctx) => Icon(
+                        FluentIcons.location,
+                        color: marker.unit == 'gas' 
+                          ? const Color.fromARGB(255, 0, 255, 0) // Green for gas stations
+                          : marker.unit == 'hotel' 
+                            ? const Color.fromARGB(255, 0, 0, 255) // Blue for hotels
+                            : const Color.fromARGB(255, 255, 255, 0), // Yellow for service
+                        size: 40,
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
-            ),
-          ),
-        );
-      },
+            ),),),
     );
   }
 
-  Future<void> _showEditDialog(MarkerModel? marker, LatLng? position) async {
+  void _showEditDialog(MarkerModel? marker, LatLng? position) async {
     final titleController = TextEditingController(text: marker?.title ?? '');
     final descController = TextEditingController(text: marker?.description ?? '');
     final latController = TextEditingController(text: position?.latitude.toString() ?? marker?.latitude.toString() ?? '');
@@ -188,18 +179,8 @@ class _MarkersScreenState extends State<MarkersScreen> {
     );
   }
 
-  Future<void> _addMarker(MarkerModel marker) async {
-    await _firebaseService.addMarker(marker);
-    _loadMarkers();
-  }
-
   Future<void> _updateMarker(MarkerModel marker) async {
     await _firebaseService.updateMarker(marker);
-    _loadMarkers();
-  }
-
-  Future<void> _deleteMarker(String id) async {
-    await _firebaseService.deleteMarker(id);
     _loadMarkers();
   }
 }

@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'screens/markers_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/map_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,7 +62,7 @@ class _MyAppState extends State<MyApp> {
         pane: NavigationPane(
           selected: _selectedIndex,
           onChanged: (index) => setState(() => _selectedIndex = index),
-          displayMode: PaneDisplayMode.top,
+          displayMode: PaneDisplayMode.compact,
           items: [
             PaneItem(
               icon: const Icon(FluentIcons.map_pin),
@@ -72,6 +73,11 @@ class _MyAppState extends State<MyApp> {
               icon: const Icon(FluentIcons.settings),
               title: const Text('Settings'),
               body: const SettingsScreen(),
+            ),
+            PaneItem(
+              icon: const Icon(FluentIcons.map_directions),
+              title: const Text('Map'),
+              body: const MapScreen(),
             ),
           ],
         ),
