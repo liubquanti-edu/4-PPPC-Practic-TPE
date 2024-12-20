@@ -93,23 +93,32 @@ class _MapScreenState extends State<MapScreen> {
                 MarkerLayer(
                   markers: markers.map((marker) {
                     return Marker(
-                      width: 80.0,
-                      height: 80.0,
+                      width: 40.0,
+                      height: 40.0,
                       point: LatLng(marker.latitude, marker.longitude),
                       builder: (ctx) => GestureDetector(
                         onTap: () => _showMarkerDetails(marker),
-                        child: Icon(
-                            marker.unit == 'gas' 
-                            ? fluent_system.FluentIcons.gas_pump_20_filled
-                            : marker.unit == 'hotel'
+                        child: Container(
+                          decoration: BoxDecoration(
+                          color: const Color(0xFF282828),
+                          shape: BoxShape.circle,
+                          ),
+                          padding: EdgeInsets.all(8),
+                            child: Center(
+                            child: Icon(
+                              marker.unit == 'gas' 
+                              ? fluent_system.FluentIcons.gas_pump_20_filled
+                              : marker.unit == 'hotel'
                               ? fluent_system.FluentIcons.bed_20_filled
                               : fluent_system.FluentIcons.toolbox_20_filled,
-                            color: marker.unit == 'gas' 
-                              ? Colors.green 
+                              color: marker.unit == 'gas' 
+                              ? Color.fromARGB(255, 76, 224, 125)
                               : marker.unit == 'hotel' 
-                                ? Colors.blue 
-                                : Colors.red,
-                          size: 30,
+                              ? Color(0xFF4ca0e0)
+                              : Color.fromARGB(255, 224, 76, 76),
+                              size: 20,
+                            ),
+                            ),
                         ),
                       ),
                     );
