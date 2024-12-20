@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart' as fluent_system;
 import '../models/marker_model.dart';
 import '../services/firebase_service.dart';
 
@@ -99,15 +100,15 @@ class _MapScreenState extends State<MapScreen> {
                         onTap: () => _showMarkerDetails(marker),
                         child: Icon(
                             marker.unit == 'gas' 
-                            ? FluentIcons.car
+                            ? fluent_system.FluentIcons.gas_pump_20_filled
                             : marker.unit == 'hotel'
-                              ? FluentIcons.hotel
-                              : FluentIcons.repair,
+                              ? fluent_system.FluentIcons.bed_20_filled
+                              : fluent_system.FluentIcons.toolbox_20_filled,
                             color: marker.unit == 'gas' 
                               ? Colors.green 
                               : marker.unit == 'hotel' 
                                 ? Colors.blue 
-                                : Colors.yellow,
+                                : Colors.red,
                           size: 30,
                         ),
                       ),

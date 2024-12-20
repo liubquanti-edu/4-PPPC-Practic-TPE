@@ -2,6 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:latlong2/latlong.dart';
 import '../models/marker_model.dart';
 import '../services/firebase_service.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart' as fluent_system;
 
 class MarkersScreen extends StatefulWidget {
   const MarkersScreen({super.key});
@@ -64,10 +65,10 @@ class _MarkersScreenState extends State<MarkersScreen> {
           child: ListTile(
             leading: Icon(
               marker.unit == 'gas'
-                  ? FluentIcons.car
+                  ? fluent_system.FluentIcons.gas_pump_24_filled
                   : marker.unit == 'hotel'
-                      ? FluentIcons.hotel
-                      : FluentIcons.repair,
+                      ? fluent_system.FluentIcons.bed_24_filled
+                      : fluent_system.FluentIcons.toolbox_24_filled,
             ),
             title: Text(marker.title),
             subtitle: Text(marker.description),
