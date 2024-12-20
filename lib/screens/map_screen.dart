@@ -19,6 +19,9 @@ class _MapScreenState extends State<MapScreen> {
   bool isLoading = true;
   LatLng _center = LatLng(49.58951146789152, 34.55103417186048);
   double _zoom = 12.0;
+  bool showGas = true;
+  bool showHotel = true;
+  bool showService = true;
 
   @override
   void initState() {
@@ -62,70 +65,135 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return ScaffoldPage(
       header: PageHeader(title: const Text('Мапа')),
-      content: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: isLoading
-          ? const Center(child: ProgressRing())
-          : FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                center: _center,
-                zoom: _zoom,
-                onPositionChanged: (position, hasGesture) {
-                  if (hasGesture) {
-                    setState(() {
-                      _center = position.center!;
-                      _zoom = position.zoom!;
-                    });
-                  }
-                },
-                onLongPress: (tapPosition, point) {
-                  _showEditDialog(null, point);
-                },
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  subdomains: const ['a', 'b', 'c'],
-                ),
-                MarkerLayer(
-                  markers: markers.map((marker) {
-                    return Marker(
-                      width: 40.0,
-                      height: 40.0,
-                      point: LatLng(marker.latitude, marker.longitude),
-                      builder: (ctx) => GestureDetector(
-                        onTap: () => _showMarkerDetails(marker),
-                        child: Container(
-                          decoration: BoxDecoration(
-                          color: const Color(0xFF282828),
-                          shape: BoxShape.circle,
-                          ),
-                          padding: EdgeInsets.all(8),
-                            child: Center(
-                            child: Icon(
-                              marker.unit == 'gas' 
-                              ? fluent_system.FluentIcons.gas_pump_20_filled
-                              : marker.unit == 'hotel'
-                              ? fluent_system.FluentIcons.bed_20_filled
-                              : fluent_system.FluentIcons.toolbox_20_filled,
-                              color: marker.unit == 'gas' 
-                              ? Color.fromARGB(255, 76, 224, 125)
-                              : marker.unit == 'hotel' 
-                              ? Color(0xFF4ca0e0)
-                              : Color.fromARGB(255, 224, 76, 76),
-                              size: 20,
-                            ),
-                            ),
+      content: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: isLoading
+                    ? const Center(child: ProgressRing())
+                    : FlutterMap(
+                        mapController: _mapController,
+                        options: MapOptions(
+                          center: _center,
+                          zoom: _zoom,
+                          onPositionChanged: (position, hasGesture) {
+                            if (hasGesture) {
+                              setState(() {
+                                _center = position.center!;
+                                _zoom = position.zoom!;
+                              });
+                            }
+                          },
+                          onLongPress: (tapPosition, point) {
+                            _showEditDialog(null, point);
+                          },
                         ),
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            subdomains: const ['a', 'b', 'c'],
+                          ),
+                          MarkerLayer(
+                            markers: markers
+                                .where((marker) =>
+                                    (marker.unit == 'gas' && showGas) ||
+                                    (marker.unit == 'hotel' && showHotel) ||
+                                    (marker.unit == 'service' && showService))
+                                .map((marker) {
+                              return Marker(
+                                width: 40.0,
+                                height: 40.0,
+                                point: LatLng(marker.latitude, marker.longitude),
+                                builder: (ctx) => GestureDetector(
+                                  onTap: () => _showMarkerDetails(marker),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                    color: const Color(0xFF282828),
+                                    shape: BoxShape.circle,
+                                    ),
+                                    padding: EdgeInsets.all(8),
+                                      child: Center(
+                                      child: Icon(
+                                        marker.unit == 'gas' 
+                                        ? fluent_system.FluentIcons.gas_pump_20_filled
+                                        : marker.unit == 'hotel'
+                                        ? fluent_system.FluentIcons.bed_20_filled
+                                        : fluent_system.FluentIcons.toolbox_20_filled,
+                                        color: marker.unit == 'gas' 
+                                        ? Color.fromARGB(255, 76, 224, 125)
+                                        : marker.unit == 'hotel' 
+                                        ? Color(0xFF4ca0e0)
+                                        : Color.fromARGB(255, 224, 76, 76),
+                                        size: 20,
+                                      ),
+                                      ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       ),
-                    );
-                  }).toList(),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Checkbox(
+                  checked: showGas,
+                  onChanged: (value) => setState(() => showGas = value!),
+                  content: Row(
+                    children: [
+                      Icon(
+                        fluent_system.FluentIcons.gas_pump_20_filled,
+                        color: const Color.fromARGB(255, 76, 224, 125),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text('АЗС'),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Checkbox(
+                  checked: showHotel,
+                  onChanged: (value) => setState(() => showHotel = value!),
+                  content: Row(
+                    children: [
+                      Icon(
+                        fluent_system.FluentIcons.bed_20_filled,
+                        color: const Color(0xFF4ca0e0),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text('Готелі'),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Checkbox(
+                  checked: showService,
+                  onChanged: (value) => setState(() => showService = value!),
+                  content: Row(
+                    children: [
+                      Icon(
+                        fluent_system.FluentIcons.toolbox_20_filled,
+                        color: const Color.fromARGB(255, 224, 76, 76),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text('СТО'),
+                    ],
+                  ),
                 ),
               ],
-            ),),),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
