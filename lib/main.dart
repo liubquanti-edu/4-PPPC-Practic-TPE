@@ -72,14 +72,14 @@ class _RootNavigationViewState extends State<RootNavigationView> {
             body: const MarkersScreen(),
           ),
           PaneItem(
-            icon: const Icon(FluentIcons.settings),
-            title: const Text('Налаштування'),
-            body: const SettingsScreen(),
-          ),
-          PaneItem(
             icon: const Icon(FluentIcons.map_directions),
             title: const Text('Мапа'),
             body: const MapScreen(),
+          ),
+          PaneItem(
+            icon: const Icon(FluentIcons.settings),
+            title: const Text('Налаштування'),
+            body: const SettingsScreen(),
           ),
         ],
       ),
