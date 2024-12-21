@@ -29,6 +29,15 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  msix: ^3.16.8
 
 flutter:
   uses-material-design: true
+
+msix_config:
+  display_name: Адміністратор компаньйону УТФ
+  publisher_display_name: Адміністратор компаньйону УТФ
+  identity_name: com.ukrtransnafta.admin
+  msix_version: 1.0.0.0
+  logo_path: assets\logo.png
+  capabilities: internetClient, location, microphone, webcam
