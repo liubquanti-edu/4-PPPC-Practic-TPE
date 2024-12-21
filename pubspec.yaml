@@ -35,8 +35,8 @@ flutter:
   uses-material-design: true
 
 msix_config:
-  display_name: Адміністратор компаньйону УТФ
-  publisher_display_name: Адміністратор компаньйону УТФ
+  display_name: Адміністратор компаньйону УТН
+  publisher_display_name: Адміністратор компаньйону УТН
   identity_name: com.ukrtransnafta.admin
   msix_version: 1.0.0.0
   logo_path: assets\logo.png
