@@ -1,3 +1,7 @@
+//-----------------------------------------
+//-  Copyright (c) 2024. Liubchenko Oleh  -
+//-----------------------------------------
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/flutter_svg.dart';

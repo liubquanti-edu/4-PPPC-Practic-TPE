@@ -1,3 +1,7 @@
+//-----------------------------------------
+//-  Copyright (c) 2024. Liubchenko Oleh  -
+//-----------------------------------------
+
 class MarkerModel {
   final String id;
   final double latitude;
