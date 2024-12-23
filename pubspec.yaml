@@ -20,7 +20,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.2
 
 flutter_launcher_icons:
-  image_path: "assets/logo.png"
+  image_path: "assets/icon.png"
   windows:
     generate: true
     icon_size: 256
@@ -39,5 +39,5 @@ msix_config:
   publisher_display_name: Адміністратор компаньйону УТН
   identity_name: com.ukrtransnafta.admin
   msix_version: 1.0.0.0
-  logo_path: assets\logo.png
+  logo_path: assets\icon.png
   capabilities: internetClient, location, microphone, webcam

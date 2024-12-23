@@ -1,3 +1,7 @@
+//-----------------------------------------
+//-  Copyright (c) 2024. Liubchenko Oleh  -
+//-----------------------------------------
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/marker_model.dart';
 

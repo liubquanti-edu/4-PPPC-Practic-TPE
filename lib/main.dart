@@ -1,3 +1,7 @@
+//-----------------------------------------
+//-  Copyright (c) 2024. Liubchenko Oleh  -
+//-----------------------------------------
+
 import 'package:flutter/foundation.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:firebase_core/firebase_core.dart';

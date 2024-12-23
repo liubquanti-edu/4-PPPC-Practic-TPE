@@ -1,3 +1,7 @@
+//-----------------------------------------
+//-  Copyright (c) 2024. Liubchenko Oleh  -
+//-----------------------------------------
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:latlong2/latlong.dart';
 import '../models/marker_model.dart';
