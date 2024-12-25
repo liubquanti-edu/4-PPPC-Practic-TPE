@@ -78,3 +78,21 @@ li {
     margin-top: 10px;
     text-align: left;
 }
+
+#apkpure {
+    background-color: #82d5c8;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+    margin: auto;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 200px;
+}
+
+#apkpure:hover {
+    background-color: #75c5b9;
+}
