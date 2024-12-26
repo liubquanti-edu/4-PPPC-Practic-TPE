@@ -19,6 +19,7 @@ dependencies:
   url_launcher: ^6.1.7
   firebase_auth: ^4.17.4
   flutter_launcher_icons: ^0.13.1
+  test: ^1.25.7
 
 flutter_launcher_icons:
   android: "launcher_icon"
