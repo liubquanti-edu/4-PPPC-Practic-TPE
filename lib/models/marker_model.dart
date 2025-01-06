@@ -19,9 +19,9 @@ class MarkerModel {
     required this.unit,
   });
 
-  factory MarkerModel.fromMap(Map<String, dynamic> map, String id) {
+  factory MarkerModel.fromMap(Map<String, dynamic> map, String docId) {
     return MarkerModel(
-      id: id,
+      id: map['id'] ?? docId,
       title: map['title'] ?? '',
       description: map['description'] ?? '',
       latitude: (map['latitude'] ?? 0).toDouble(),
@@ -32,6 +32,7 @@ class MarkerModel {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'title': title,
       'description': description,
       'latitude': latitude,

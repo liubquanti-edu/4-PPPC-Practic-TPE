@@ -22,7 +22,13 @@ class FirebaseService {
 
   Future<void> addMarker(MarkerModel marker) async {
     try {
-      await _firestore.collection('markers').add(marker.toMap());
+      DocumentReference docRef = await _firestore.collection('markers').add({
+        ...marker.toMap(),
+      });
+      
+      await docRef.update({
+        'id': docRef.id,
+      });
     } catch (e) {
       print('Error adding marker: $e');
     }
